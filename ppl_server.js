@@ -8,8 +8,6 @@ const authRouter = require("./Router/authRouter");
 dotenv.config();
 process.env.TOKEN_SECRET;
 
-const jwt = require("jsonwebtoken");
-
 const port = 1818;
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");

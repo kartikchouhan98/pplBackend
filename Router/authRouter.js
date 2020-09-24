@@ -2,24 +2,17 @@ const express = require("express");
 const authRouter = express.Router();
 const apiCaller = require("../API/apiCaller");
 const dotenv = require("dotenv");
-
+const verifyToken=require("./verifyToken")
 dotenv.config();
-process.env.TOKEN_SECRET;
+process.env.ACCESS_TOKEN_SECRET;
 
 const jwt = require("jsonwebtoken");
 
-function generateAccessToken(username) {
-  return jwt.sign(username, "hello", {});
+function generateAccessToken(data) {
+  return jwt.sign(data,  process.env.ACCESS_TOKEN_SECRET, {});
 }
 
-function authenticateToken(req, res, next) {
-  const token = req.headers["authorization"];
-  console.log("auth", token);
-  if (token == null) return res.sendStatus(401);
-  console.log("passed ");
-  req.token = token;
-  next();
-}
+
 
 authRouter.post("/adduser", (req, res) => {
   apiCaller
@@ -88,14 +81,10 @@ authRouter.post("/forgot", (req, res) => {
     .catch((err) => console.error(err));
 });
 
-authRouter.post("/verify", authenticateToken, (req, res) => {
-  jwt.verify(req.token, "hello", (err, user) => {
-    console.log(err);
-    if (err) return res.sendStatus(403);
-    console.log("verify", user);
-    res.send({
-      success: true,
-    });
-  });
+authRouter.post("/verify", verifyToken, (req, res) => {
+  res.send({
+    success: true
+  })
 });
+
 module.exports = authRouter;
